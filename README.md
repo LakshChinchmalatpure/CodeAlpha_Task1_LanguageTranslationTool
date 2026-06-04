@@ -54,6 +54,6 @@ Vite
 TypeScript
 Tailwind CSS
 Google Translate API
-Author
 
+Author:
 Laksh Chinchmalatpure
