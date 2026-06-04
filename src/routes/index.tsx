@@ -22,21 +22,22 @@ import { Toaster } from "@/components/ui/sonner";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Aurora — AI Multilingual Translator & Assistant" },
+      { title: "Language Translation Tool" },
       {
         name: "description",
         content:
-          "AI-powered language translator with grammar correction, explanations, text-to-speech, and voice input.",
+          "Fast, free language translation across 20+ languages, powered by Google Translate. Voice input, text-to-speech, history, and dark mode.",
       },
-      { property: "og:title", content: "Aurora — AI Translator" },
+      { property: "og:title", content: "Language Translation Tool" },
       {
         property: "og:description",
-        content: "Translate, learn, and listen with AI.",
+        content: "Translate text across 20+ languages instantly.",
       },
     ],
   }),
   component: TranslatorPage,
 });
+
 
 // -------- Supported languages --------
 const LANGUAGES: { code: string; name: string }[] = [
@@ -63,8 +64,8 @@ const LANGUAGES: { code: string; name: string }[] = [
 ];
 
 const MAX_CHARS = 5000;
-const HISTORY_KEY = "aurora.translation.history.v1";
-const THEME_KEY = "aurora.theme";
+const HISTORY_KEY = "ltt.translation.history.v1";
+const THEME_KEY = "ltt.theme";
 
 type HistoryItem = {
   id: string;
@@ -72,11 +73,10 @@ type HistoryItem = {
   source: string;
   target: string;
   original: string;
-  corrected: string;
   translated: string;
-  explanation: string;
   detected: string;
 };
+
 
 function TranslatorPage() {
   const translate = useServerFn(translateText);
@@ -88,10 +88,9 @@ function TranslatorPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{
     detectedLanguage: string;
-    correctedText: string;
     translatedText: string;
-    explanation: string;
   } | null>(null);
+
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const [dark, setDark] = useState(false);
@@ -154,12 +153,11 @@ function TranslatorPage() {
         source: sourceLang,
         target: targetLang,
         original: text.trim(),
-        corrected: res.correctedText,
         translated: res.translatedText,
-        explanation: res.explanation,
         detected: res.detectedLanguage,
       };
       persistHistory([item, ...history]);
+
     } catch (e: any) {
       console.error(e);
       toast.error(e?.message || "Translation failed.");
@@ -197,9 +195,7 @@ function TranslatorPage() {
     const blob = new Blob(
       [
         `Original (${result.detectedLanguage}):\n${text}\n\n` +
-          `Corrected:\n${result.correctedText}\n\n` +
-          `Translated (${targetLang}):\n${result.translatedText}\n\n` +
-          `Explanation:\n${result.explanation}\n`,
+          `Translated (${targetLang}):\n${result.translatedText}\n`,
       ],
       { type: "text/plain;charset=utf-8" },
     );
@@ -210,6 +206,7 @@ function TranslatorPage() {
     a.click();
     URL.revokeObjectURL(url);
   };
+
 
   const handleSpeak = () => {
     if (!result?.translatedText) return;
@@ -273,12 +270,13 @@ function TranslatorPage() {
           </div>
           <div>
             <h1 className="text-xl font-bold sm:text-2xl">
-              <span className="text-gradient-hero">Aurora</span> Translator
+              <span className="text-gradient-hero">Language Translation</span> Tool
             </h1>
             <p className="text-muted-foreground text-xs">
-              AI-powered multilingual assistant
+              Fast multilingual translator
             </p>
           </div>
+
         </div>
         <div className="flex items-center gap-2">
           <IconButton
@@ -299,17 +297,17 @@ function TranslatorPage() {
         <section className="mb-8 text-center sm:mb-12">
           <div className="border-border bg-card/60 mb-4 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs backdrop-blur">
             <Sparkles className="h-3 w-3" />
-            Powered by Gemini via Lovable AI
+            Powered by Google Translate
           </div>
           <h2 className="text-3xl font-bold tracking-tight sm:text-5xl">
             Translate anything,{" "}
             <span className="text-gradient-hero">understand everything</span>
           </h2>
           <p className="text-muted-foreground mx-auto mt-3 max-w-xl text-sm sm:text-base">
-            Grammar-corrected translations across 20 languages, with AI
-            explanations, speech, and voice input.
+            Instant translations across 20+ languages, with speech and voice input.
           </p>
         </section>
+
 
         {/* Language selectors */}
         <div className="bg-card/60 border-border mb-4 grid grid-cols-1 items-center gap-2 rounded-2xl border p-3 backdrop-blur sm:grid-cols-[1fr_auto_1fr]">
@@ -423,22 +421,17 @@ function TranslatorPage() {
             className="bg-gradient-hero shadow-glow inline-flex items-center gap-2 rounded-full px-8 py-3 text-sm font-semibold text-white transition hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Sparkles className="h-4 w-4" />
-            {loading ? "Translating…" : "Translate with AI"}
+            {loading ? "Translating…" : "Translate"}
           </button>
         </div>
 
-        {/* AI insights */}
+        {/* Detected language info */}
         {result && (
-          <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="mt-8 grid grid-cols-1 gap-4">
             <InsightCard label="Detected language" value={result.detectedLanguage} />
-            <InsightCard
-              label="Corrected text"
-              value={result.correctedText}
-              muted={result.correctedText.trim() === text.trim()}
-            />
-            <InsightCard label="AI explanation" value={result.explanation} />
           </div>
         )}
+
       </main>
 
       {/* ---------- History Drawer ---------- */}
@@ -486,12 +479,11 @@ function TranslatorPage() {
                       setTargetLang(h.target);
                       setResult({
                         detectedLanguage: h.detected,
-                        correctedText: h.corrected,
                         translatedText: h.translated,
-                        explanation: h.explanation,
                       });
                       setShowHistory(false);
                     }}
+
                   >
                     <div className="text-muted-foreground mb-1 flex items-center justify-between text-[11px] uppercase tracking-wider">
                       <span>
@@ -512,8 +504,9 @@ function TranslatorPage() {
       )}
 
       <footer className="text-muted-foreground border-border/50 mx-auto max-w-6xl border-t px-4 py-6 text-center text-xs sm:px-6">
-        Built with Lovable · Gemini AI · TanStack Start
+        Language Translation Tool · Google Translate · TanStack Start
       </footer>
+
     </div>
   );
 }
