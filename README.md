@@ -31,6 +31,8 @@ src/
 
 Installation
 
+''' In the Command prompt '''
+
 Clone the repository:
 
 git clone https://github.com/LakshChinchmalatpure/CodeAlpha_Task1_LanguageTranslationTool.git
