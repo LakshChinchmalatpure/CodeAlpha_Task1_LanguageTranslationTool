@@ -48,7 +48,7 @@ bun run dev
 Open in your browser:
 http://localhost:8080
 
-Technologies Used
+Technologies Used:
 React
 Vite
 TypeScript
