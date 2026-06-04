@@ -1,53 +1,35 @@
-# Aurora — AI-Powered Multilingual Language Translator & Assistant
+# Language Translation Tool
 
-A modern web app that translates text across 20 languages using Google's Gemini AI (via the Lovable AI Gateway). It also corrects grammar, explains the translation, speaks the result aloud, and accepts voice input.
+A modern web app that translates text across 20+ languages using the **Google Translate** public endpoint. No API key required.
 
-## ✨ Features
+## Features
 
-- 🌍 AI translation across 20 languages
-- 🔍 Auto language detection
-- ✍️ Grammar correction before translation
-- 💡 AI-generated explanation of the translation
-- 🔊 Text-to-Speech for translated output
-- 🎙️ Voice input via the Web Speech Recognition API
-- 📋 Copy, ⬇️ download as `.txt`, 🔁 swap languages, 🧹 clear
-- 🕘 Translation history (saved to Local Storage)
-- 🌗 Dark / Light mode toggle
-- 📏 Character counter with progress bar
-- ⚡ Loading animation + friendly error toasts
+- 20+ languages with auto-detect
+- Swap source/target languages
+- Text-to-speech (Web Speech API)
+- Voice input (Speech Recognition API)
+- Copy & download translation as `.txt`
+- Translation history (localStorage)
+- Dark / light mode
 
-## 🧠 How it works
+## How it works
 
-1. The UI (React + TanStack Start) collects text, source, and target language.
-2. A **server function** (`src/lib/translate.functions.ts`) calls the **Lovable AI Gateway** (`https://ai.gateway.lovable.dev/v1/chat/completions`) with the Gemini model.
-3. The model returns a structured JSON response: detected language, corrected text, translated text, and an explanation.
-4. The frontend renders all four and saves the entry to Local Storage history.
+The frontend (React + TanStack Start) calls a server function (`src/lib/translate.functions.ts`) that proxies the request to Google Translate's public endpoint, so no API key is exposed to the browser.
 
-The API key (`LOVABLE_API_KEY`) is provided automatically by Lovable Cloud — no manual setup required.
-
-## 🗂️ Project structure
+## Project structure
 
 ```
 src/
+├── lib/translate.functions.ts   # Server function — calls Google Translate
 ├── routes/
-│   ├── __root.tsx         # App shell
-│   └── index.tsx          # Translator UI (single page)
-├── lib/
-│   └── translate.functions.ts  # Server function calling Gemini
-├── styles.css             # Design system (Aurora theme)
-└── components/ui/         # shadcn primitives (toaster, etc.)
+│   ├── __root.tsx               # Root layout
+│   └── index.tsx                # Main translator UI
+└── styles.css                   # Design system
 ```
 
-## 🚀 Run it
-
-This is a Lovable project — open the preview and start translating. To run locally:
+## Run locally
 
 ```bash
 bun install
 bun run dev
 ```
-
-## 🔐 Notes
-
-- All AI calls go through a server function. The API key is never exposed to the browser.
-- History is stored in the user's browser via `localStorage` only.
