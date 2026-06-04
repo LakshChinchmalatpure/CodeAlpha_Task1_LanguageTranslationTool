@@ -38,4 +38,4 @@ export default tseslint.config(
   },
   eslintPluginPrettier,
 );
-n
+
