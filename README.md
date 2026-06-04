@@ -29,29 +29,30 @@ src/
 
 ## Run locally
 
-Installation:
+Installation
 
 Clone the repository:
+
 git clone https://github.com/LakshChinchmalatpure/CodeAlpha_Task1_LanguageTranslationTool.git
 cd CodeAlpha_Task1_LanguageTranslationTool
 
 Install dependencies:
+
 bun install
 
 Run the project:
+
 bun run dev
 
 Open in your browser:
 
 http://localhost:8080
-
-
-##Technologies Used
+Technologies Used
 React
 Vite
 TypeScript
 Tailwind CSS
 Google Translate API
+Author
 
-Author:
 Laksh Chinchmalatpure
