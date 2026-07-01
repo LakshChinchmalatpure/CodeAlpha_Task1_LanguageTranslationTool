@@ -1,5 +1,6 @@
 # Language Translation Tool
 
+
 A modern web app that translates text across 20+ languages using the **Google Translate** public endpoint. No API key required.
 
 ## Features
